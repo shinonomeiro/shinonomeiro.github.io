@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>日本語自動入力デモ</title>
+
+        <link rel="stylesheet" href="https://necolas.github.io/normalize.css/7.0.0/normalize.css">
+
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            *:focus {
+                outline-width: 0;
+            }
+
+            body {
+                font-family: sans-serif;
+                background-color: #f1f6ff;
+            }
+
+            ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .container {
+                margin-top: 180px;
+            }
+
+            .title {
+                letter-spacing: 5px;
+                text-align: center;
+                color: #3c3c3c;
+            }
+
+            .inputs, .suggestions {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                width: 700px;
+                margin: 0 auto;
+            }
+
+            .inputs {
+
+            }
+
+            .suggestions {
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+
+            input[name=autocomplete] {
+                font-size: 2em;
+                flex: 5;
+                height: 45px;
+                padding: 5px 7px;
+                border: 1px solid #ff8080;
+                border-radius: 5px 0 0 5px;
+                box-shadow: inset 0 0 3px #ff8080;
+            }
+
+            button[name=search] {
+                background-color: #ff8080;
+                color: white;
+                flex: 1;
+                border: none;
+                border-radius: 0 5px 5px 0;
+                height: 45px;
+                width: 65px;
+                cursor: pointer;
+            }
+
+            button[name=search]:active {
+                background-color: #f13c3c;
+            }
+
+            .word {
+                background-color: #f5bebe;
+                border: 1px solid #ff8080;
+                border-radius: 5px;
+                padding: 3px 7px;
+                margin: 5px 5px 5px 0;
+                height: 30px;
+                cursor: pointer;
+            }
+
+            .word:active {
+                background-color: #ff8080;
+            }
+
+            .word:last-child {
+                margin-right: 0;
+            }
+        </style>
+
+        <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+        <script src="./build/jautocomplete.js"></script>
+        <script src="./eki.js"></script>
+        <script src="./eng_words.js"></script>
+
+        <script>
+            Jautocomplete.add([
+                { word: 'せいねんがっぴ', transforms: ['生年月日'] },
+                { word: 'きそうてんがい', transforms: ['奇想天外'] },
+                { word: 'いらっとくる', transforms: ['イラッとくる'] },
+                { word: 'たべる', transforms: ['食べる'] },
+                { word: 'しんじゅく らんち', transforms: ['新宿 ランチ'] },
+                { word: 'testabc' },
+                { word: 'けーき', transforms: ['ケーキ'] },
+                { word: 'あたらしい', transforms: ['新しい'] },
+                { word: 'こうせいず' },
+                { word: 'こうせい', transforms: ['構成', '厚生', '公正'] },
+                { word: 'こうせいねんきん', transforms: ['厚生年金'] }
+            ]);
+
+            Jautocomplete.add(stations);
+            Jautocomplete.add(eng_words);
+
+            $(function() {
+                var input = $('input[name=autocomplete]');
+                var suggestions = $('#suggestions');
+
+                function handleClick() {
+                    input.val($(this).text() + ' ');
+                    input.focus();
+                }
+
+                function clear() {
+                    $('.word').off('click');
+                    suggestions.text('');
+                }
+
+                $('input[name=autocomplete]').on('input', function() {
+                    if (this.value) {
+                        var res = Jautocomplete.find(this.value);
+
+                        if (res.length > 0) {
+                            clear();
+
+                            res.forEach(function(w) {
+                                var e = '<li class="word">' + w + '</li>';
+                                suggestions.append(e);
+                            });
+
+                            $('.word').on('click', handleClick);
+                        }
+
+                    } else {
+                        clear();
+                    }
+                });
+            });
+        </script>
+
+    </head>
+
+    <body>
+        <section id="container" class="container">
+            <h1 class="title">日本語自動入力デモ</h1>
+
+            <section class="inputs">
+                <input type="text" name="autocomplete" value="">
+                <button type="submit" name="search">検索</button>
+            </section>
+
+            <ul id="suggestions" class="suggestions"></ul>
+        </section>
+    </body>
+</html>
