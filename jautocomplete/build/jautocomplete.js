@@ -112,3 +112,12 @@ var Jautocomplete = function () {
         find: find
     };
 }();
+
+// Export as module if modules are supported on current platform
+
+if (typeof exports !== 'undefined') {
+
+    if (typeof module !== 'undefined' && module.exports) {
+        exports = module.exports = Jautocomplete;
+    }
+}
