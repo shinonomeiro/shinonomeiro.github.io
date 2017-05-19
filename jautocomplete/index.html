@@ -104,13 +104,20 @@
         <script src="./eng_words.js"></script>
 
         <script>
+
+            Jautocomplete.config({
+                limitAlpha: 5,
+                limitKana: 4,
+                limitKanji: 3
+            });
+
             Jautocomplete.add([
                 { word: 'せいねんがっぴ', transforms: ['生年月日'] },
                 { word: 'きそうてんがい', transforms: ['奇想天外'] },
                 { word: 'いらっとくる', transforms: ['イラッとくる'] },
                 { word: 'たべる', transforms: ['食べる'] },
                 { word: 'しんじゅく らんち', transforms: ['新宿 ランチ'] },
-                { word: 'testabc' },
+                { word: 'foobar' },
                 { word: 'けーき', transforms: ['ケーキ'] },
                 { word: 'あたらしい', transforms: ['新しい'] },
                 { word: 'こうせいず' },
