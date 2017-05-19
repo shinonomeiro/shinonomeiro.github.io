@@ -9,6 +9,7 @@ var Jautocomplete = function () {
     }
 
     var root = new TrieNode();
+    var wordCount = 0;
 
     /*
     * References:
@@ -25,7 +26,6 @@ var Jautocomplete = function () {
 
     function _add(word) {
         var node = root;
-        word = word.replace('　', ' ').toLowerCase();
 
         for (var i = 0; i < word.length; i++) {
             var key = getKeyFromChar(word[i]);
@@ -48,17 +48,37 @@ var Jautocomplete = function () {
     * Adds a new entry to the trie
     */
     function add(words) {
+        var _this = this;
+
+        if (!words) {
+            return;
+        }
+
         words.forEach(function (e) {
             var word = e.word;
-            var transforms = e.transforms;
-            var leaf = _add(word);
 
-            if (transforms) {
+            if (!word) {
+                return;
+            }
+
+            // Filter out empty transforms
+            var transforms = e.transforms ? e.transforms.filter(function (w) {
+                return !!w;
+            }) : [];
+
+            // Add word to the trie
+            var leaf = _add(word);
+            _this.wordCount++;
+
+            if (transforms && transforms.length > 0) {
                 // This word has transforms: append them to the list
                 leaf.transforms = leaf.transforms.concat(transforms);
+
                 // Add each of them to the trie as well
                 transforms.forEach(function (w) {
                     var c = _add(w);
+                    _this.wordCount++;
+
                     // Add itself as a transform
                     c.transforms = c.transforms.concat(w);
                 });
@@ -75,9 +95,13 @@ var Jautocomplete = function () {
     * Returns an array of suggestions, empty if none
     */
     function find(prefix) {
-        var current = root;
         var matches = [];
-        prefix = prefix.replace('　', ' ').toLowerCase();
+
+        if (!prefix) {
+            return matches;
+        }
+
+        var current = root;
 
         for (var i = 0; i < prefix.length; i++) {
             var j = getKeyFromChar(prefix[i]);
@@ -109,7 +133,8 @@ var Jautocomplete = function () {
     */
     return {
         add: add,
-        find: find
+        find: find,
+        wordCount: wordCount // Exposed for testing, should not be used in actual production code!
     };
 }();
 
