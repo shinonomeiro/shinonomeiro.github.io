@@ -9,7 +9,6 @@ var Jautocomplete = function () {
     }
 
     var root = new TrieNode();
-    var wordCount = 0;
 
     var options = {
         limitAlpha: 5,
@@ -30,19 +29,25 @@ var Jautocomplete = function () {
     * http://jrgraphix.net/r/Unicode/3040-309F (Hiragana)
     * http://jrgraphix.net/r/Unicode/30A0-30FF (Katakana)
     */
-    function getKeyFromChar(c) {
+    function _getKeyFromChar(c) {
         return c.charCodeAt(0);
     }
 
-    function getCharFromKey(k) {
+    function _getCharFromKey(k) {
         return String.fromCharCode(k);
+    }
+
+    function _merge(a1, a2) {
+        return a1.concat(a2.filter(function (item) {
+            return a1.indexOf(item) < 0;
+        }));
     }
 
     function _add(word) {
         var node = root;
 
         for (var i = 0; i < word.length; i++) {
-            var key = getKeyFromChar(word[i]);
+            var key = _getKeyFromChar(word[i]);
 
             if (!node.children[key]) {
                 node.children[key] = new TrieNode();
@@ -51,7 +56,10 @@ var Jautocomplete = function () {
             node = node.children[key];
         }
 
-        node.isLeaf = true;
+        if (!node.isLeaf) {
+            node.isLeaf = true;
+            Jautocomplete.wordCount++;
+        }
 
         // Return leaf node
         return node;
@@ -62,8 +70,6 @@ var Jautocomplete = function () {
     * Adds a new entry to the trie
     */
     function add(words) {
-        var _this = this;
-
         if (!words) {
             return;
         }
@@ -82,23 +88,20 @@ var Jautocomplete = function () {
 
             // Add word to the trie
             var leaf = _add(word);
-            _this.wordCount++;
 
-            if (transforms && transforms.length > 0) {
+            if (transforms.length > 0) {
                 // This word has transforms: append them to the list
-                leaf.transforms = leaf.transforms.concat(transforms);
+                leaf.transforms = _merge(leaf.transforms, transforms);
 
                 // Add each of them to the trie as well
                 transforms.forEach(function (w) {
                     var c = _add(w);
-                    _this.wordCount++;
-
                     // Add itself as a transform
-                    c.transforms = c.transforms.concat(w);
+                    c.transforms = _merge(c.transforms, [w]);
                 });
             } else {
                 // This word doesn't have transforms: add itself as a transform
-                leaf.transforms = leaf.transforms.concat(word);
+                leaf.transforms = _merge(leaf.transforms, [word]);
             }
         });
     }
@@ -118,7 +121,7 @@ var Jautocomplete = function () {
         var current = root;
 
         for (var i = 0; i < prefix.length; i++) {
-            var j = getKeyFromChar(prefix[i]);
+            var j = _getKeyFromChar(prefix[i]);
 
             if (!current.children[j]) {
                 return matches;
@@ -127,7 +130,7 @@ var Jautocomplete = function () {
             current = current.children[j];
         }
 
-        var limit = void 0; // How far the lookahead should go
+        var limit = void 0; // How far the lookahead should proceed
 
         if (/^[\x00-\x7F]+$/.test(prefix)) {
             // prefix is ASCII only
@@ -143,13 +146,13 @@ var Jautocomplete = function () {
         (function lookAhead(str, node) {
             if (node.isLeaf) {
                 node.transforms.forEach(function (w) {
-                    return matches.push(w);
+                    return matches = _merge(matches, [w]);
                 });
             }
 
             if (str.length - prefix.length <= limit) {
                 for (var k in node.children) {
-                    lookAhead(str + getCharFromKey(k), node.children[k]);
+                    lookAhead(str + _getCharFromKey(k), node.children[k]);
                 }
             }
         })(prefix, current);
@@ -163,10 +166,29 @@ var Jautocomplete = function () {
     return {
         config: config,
         add: add,
-        find: find,
-        wordCount: wordCount // Exposed for testing, should not be used in actual production code!
+        find: find
     };
 }();
+
+Jautocomplete.wordCount = 0;
+
+// Interface for use as a web worker
+
+onmessage = function onmessage(e) {
+    var msg = e.data;
+
+    switch (msg.action) {
+        case 'CONFIG':
+            Jautocomplete.config(msg.options);
+            break;
+        case 'ADD':
+            Jautocomplete.add(msg.words);
+            break;
+        case 'FIND':
+            postMessage(Jautocomplete.find(msg.prefix));
+            break;
+    }
+};
 
 // Export as module if modules are supported on current platform
 
