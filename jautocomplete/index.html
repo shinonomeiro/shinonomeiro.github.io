@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
@@ -99,7 +98,6 @@
         </style>
 
         <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-        <!-- <script src="./build/jautocomplete.js"></script> -->
         <script src="./build/eki.js"></script>
         <script src="./build/eng_words.js"></script>
 
@@ -121,6 +119,25 @@
                     acc.push(cur);
                     return acc;
                 }, stations)
+            });
+
+            var more = [
+                { word: 'せいねんがっぴ', transforms: ['生年月日'] },
+                { word: 'きそうてんがい', transforms: ['奇想天外'] },
+                { word: 'いらっとする', transforms: ['イラッとする'] },
+                { word: 'たべる', transforms: ['食べる'] },
+                { word: 'しんじゅく らんち', transforms: ['新宿 ランチ'] },
+                { word: 'けーき', transforms: ['ケーキ'] },
+                { word: 'あたらしい', transforms: ['新しい'] },
+                { word: 'こうせいず' },
+                { word: 'こうせい', transforms: ['構成', '厚生', '公正'] },
+                { word: 'こうせいねんきん', transforms: ['厚生年金'] },
+                { word: 'ざ・りんぐ', transforms: ['ザリング', 'ザ・リング'] },
+            ];
+
+            worker.postMessage({
+                action: 'ADD',
+                words: more
             });
 
             $(function() {
@@ -164,78 +181,6 @@
                 };
             });
         </script>
-
-        <!-- <script>
-            Jautocomplete.config({
-                limitAlpha: 5,
-                limitKana: 4,
-                limitKanji: 3
-            });
-
-            // Jautocomplete.add([
-            //     { word: 'せいねんがっぴ', transforms: ['生年月日'] },
-            //     { word: 'きそうてんがい', transforms: ['奇想天外'] },
-            //     { word: 'いらっとくる', transforms: ['イラッとくる'] },
-            //     { word: 'たべる', transforms: ['食べる'] },
-            //     { word: 'しんじゅく らんち', transforms: ['新宿 ランチ'] },
-            //     { word: 'testabc' },
-            //     { word: 'けーき', transforms: ['ケーキ'] },
-            //     { word: 'あたらしい', transforms: ['新しい'] },
-            //     { word: 'こうせいず' },
-            //     { word: 'こうせい', transforms: ['構成', '厚生', '公正'] },
-            //     { word: 'ざ・りんぐ', transforms: ['ザリング', 'ザ・リング'] },
-            //     { word: 'てすと', transforms: ['test'] },
-            //     { word: 'こうせいねんきん', transforms: ['厚生年金'] },
-            //     { word: "ばーすでー", transforms: [ "バースデー", "誕生日" ] },
-            //     { word: "ばーすでーけーき", transforms: [ "バースデーケーキ", "誕生日ケーキ" ] }
-            // ]);
-
-            Jautocomplete.add(stations);
-            Jautocomplete.add(eng_words);
-
-            $.ajax({
-                url: '/input_words/'
-            }).done(function(data) {
-                console.log(data);
-                Jautocomplete.add(JSON.parse(data));
-            });
-
-            $(function() {
-                var input = $('input[name=autocomplete]');
-                var suggestions = $('#suggestions');
-
-                function handleClick() {
-                    input.val($(this).text() + ' ');
-                    input.focus();
-                }
-
-                function clear() {
-                    $('.word').off('click');
-                    suggestions.text('');
-                }
-
-                $('input[name=autocomplete]').on('input', function() {
-                    if (this.value) {
-                        var res = Jautocomplete.find(this.value);
-
-                        if (res.length > 0) {
-                            clear();
-
-                            res.forEach(function(w) {
-                                var e = '<li class="word">' + w + '</li>';
-                                suggestions.append(e);
-                            });
-
-                            $('.word').on('click', handleClick);
-                        }
-
-                    } else {
-                        clear();
-                    }
-                });
-            });
-        </script> -->
-
     </head>
 
     <body>
