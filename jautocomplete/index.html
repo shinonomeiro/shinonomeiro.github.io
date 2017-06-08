@@ -117,7 +117,10 @@
 
             worker.postMessage({
                 action: 'ADD',
-                words: stations
+                words: eng_words.reduce(function(acc, cur) {
+                    acc.push(cur);
+                    return acc;
+                }, stations)
             });
 
             $(function() {
