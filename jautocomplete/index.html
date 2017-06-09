@@ -144,24 +144,21 @@
                 var input = $('input[name=autocomplete]');
                 var suggestions = $('#suggestions');
 
-                function handleClick() {
-                    input.val($(this).text() + ' ');
-                    input.focus();
-                }
-
-                function clear() {
-                    $('.word').off('click');
-                    suggestions.text('');
-                }
-
-                input.on('input', function() {
-                    if (this.value) {
+                input.on('input', function(e) {
+                    if (this.value.length > 1) {
                         worker.postMessage({
                             action: 'FIND',
                             prefix: this.value
                         });
                     } else {
-                        clear();
+                        suggestions.text('');
+                    }
+                });
+
+                suggestions.on('click', function(e) {
+                    if (e.target && e.target.nodeName === 'LI') {
+                        input.val($(this).text() + ' ');
+                        input.focus();
                     }
                 });
 
@@ -169,14 +166,12 @@
                     var res = e.data;
 
                     if (res.length > 0) {
-                        clear();
+                        suggestions.text('');
 
                         res.forEach(function(w) {
                             var e = '<li class="word">' + w + '</li>';
                             suggestions.append(e);
                         });
-
-                        $('.word').on('click', handleClick);
                     }
                 };
             });
