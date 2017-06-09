@@ -144,14 +144,37 @@
                 var input = $('input[name=autocomplete]');
                 var suggestions = $('#suggestions');
 
+                var pool = (function() {
+                    var li = [];
+
+                    return {
+                        push: function(elems) {
+                            elems.reduce(function(acc, cur) {
+                                acc.push(cur);
+                                return acc;
+                            }, li);
+                        },
+                        pop: function() {
+                            return li.length < 1 ? $('<li class="word"></li>')[0] : li.pop();
+                        },
+                        count: function() {
+                            return li.length;
+                        }
+                    };
+                })();
+
+                function clearSuggestions() {
+                    pool.push(suggestions.children().detach().toArray());
+                }
+
                 input.on('input', function(e) {
-                    if (this.value.length > 1) {
+                    if (this.value) {
                         worker.postMessage({
                             action: 'FIND',
                             prefix: this.value
                         });
                     } else {
-                        suggestions.text('');
+                        clearSuggestions();
                     }
                 });
 
@@ -166,11 +189,11 @@
                     var res = e.data;
 
                     if (res.length > 0) {
-                        suggestions.text('');
+                        clearSuggestions();
 
                         res.forEach(function(w) {
-                            var e = '<li class="word">' + w + '</li>';
-                            suggestions.append(e);
+                            var li = $(pool.pop()).text(w);
+                            suggestions.append(li);
                         });
                     }
                 };
