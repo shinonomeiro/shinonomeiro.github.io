@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    	<meta name="screen-orientation" content="portrait"/>
+    	<title>CCPuzzle</title>
+	    <style>
+	    	body {
+	    		background-color: black;
+	    	}
+
+	    	#fullScreen {
+	    		font-size: 40px;
+	    	}
+	    </style>
+	</head>
+	<body>
+		<canvas id="gameCanvas"></canvas>
+		<a id="fullScreen" href="#" onclick="makeFullScreen()">Full screen</a>
+		
+		<script type="text/javascript" src="polyfill.min.js"></script>
+	    <!-- build:js -->
+	    <script type="text/javascript" src="framework/cocos2d-js-v3.10.js"></script>
+	    <script type="text/javascript" src="dist/game.build.js"></script>
+	    <!-- endbuild -->
+		<script>
+			function makeFullScreen() {
+				var elem = document.body;
+
+				if (elem.requestFullscreen) {
+					elem.requestFullscreen();
+				} else if (elem.webkitRequestFullScreen) {
+					elem.webkitRequestFullScreen();
+				} else if (elem.mozRequestFullScreen) {
+					elem.mozRequestFullScreen();
+				}
+			}
+
+		    window.onload = function() {
+		        cc.game.run("gameCanvas");
+		    };
+		</script>
+	</body>
+</html>
