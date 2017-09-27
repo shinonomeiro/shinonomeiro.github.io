@@ -2,7 +2,7 @@
 Projects portfolio
 
 https://github.com/shinonomeiro/Source - Jul- 2017 (ongoing)<br/>
-Some source code from my current private project. As much as I'm allowed to tell, it fetches nearby train stations in proximity to your current position, and gives you the next train departure times in two clicks. This is all the info I can give, sorry! 
+Some source code from my current private project with a friend. As much as I'm allowed to tell, it fetches nearby train stations in proximity to your current position, and gives you the next train departure times in two clicks. This is all the info I can give, sorry! 
 Front-end implementation done in parallel using both React and Vue as libraries for experimentation purposes. The back-end is also developed by myself using Node / Express/ MongoDB but the code is not featured on this repo. Might add some of it at a later time if I have some time.
 
 https://shinonomeiro.github.io/jautocomplete/ - May 2017<br/>
