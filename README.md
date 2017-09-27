@@ -3,7 +3,7 @@ Projects portfolio
 
 https://github.com/shinonomeiro/Source - Jul- 2017 (ongoing)<br/>
 Some source code from my current private project with a friend. As much as I'm allowed to tell, it fetches nearby train stations in proximity to your current position, and gives you the next train departure times in two clicks. This is all the info I can give, sorry! 
-Front-end implementation done in parallel using both React and Vue as libraries for experimentation purposes. The back-end is also developed by myself using Node / Express/ MongoDB but the code is not featured on this repo. Might add some of it at a later time if I have some time.
+Front-end implementation is done in parallel using both React and Vue libraries for studying and experimentation purposes. The back-end is also developed by myself using Node / Express/ MongoDB but the code is not featured on this repo. Might add some of it at a later time if I have some time.
 
 https://shinonomeiro.github.io/jautocomplete/ - May 2017<br/>
 Running demo of <a href="https://github.com/shinonomeiro/Jautocomplete">Jautocomplete</a> with 5000 Japanese train station names from あ to た (total of 10,000 if counting transforms as well) + 2500 random a-z English words dataset. Implemented using a simple trie that has to be initialized and loaded with keywords before usage.
